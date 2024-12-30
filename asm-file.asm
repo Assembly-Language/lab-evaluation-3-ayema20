@@ -1,27 +1,25 @@
-
-
 INCLUDE Irvine32.inc
-.data
-;public asmfunc
-msg db "assebly procedure end now",0
-
 
 .code
-asmfunc PROC p1:DWORD, p2:DWORD
-    
-    push ebp
-    mov ebp,esp
-    mov eax, [ebp+12
-\] ; Move the first parameter into EAX
-    call writedec
-    call crlf
-    ;add eax, p2 ; Add the second parameter to EAX
-    call writedec
-    call crlf
-    mov edx, offset msg
-    call writestring
-    call crlf
-    
+asmfunc PROC arr:PTR DWORD, base:PTR DWORD
+    mov esi, arr           ;intilaize pointer
+    mov ecx, [arr + 4]    
+    mov edx, 0           
+loop_start:
+    cmp ecx, 0           
+    je done
+    mov eax, [esi]        
+    test eax, eax         
+    jnz non_zero          
+next_element:
+    add esi, 4            
+    dec ecx               
+    jmp loop_start        
+non_zero:
+    inc edx               
+    jmp next_element      
+done:
+    mov [base], edx       ; Store the result (non-zero count) into base
     ret
 asmfunc ENDP
-end
+END
